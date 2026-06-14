@@ -1,13 +1,13 @@
 {
-  "name": "MinandaTurner",
-  "displayName": "Miranda Language Support",
+  "name": "MirandaDavidTurner",
+  "displayName": "Miranda (David Turner)",
   "description": "Syntax highlighting and ESLint-style code quality linting for the Miranda functional programming language",
   "version": "0.1.0",
   "publisher": "AlejandroAdorjan",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aadorian/mirandaLintern.git"
+    "url": "https://github.com/aadorian/mirandaTurner.git"
   },
   "engines": {
     "vscode": "^1.85.0"
@@ -27,7 +27,6 @@
   },
   "activationEvents": [
     "onStartupFinished"
-   
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -686,6 +685,7 @@
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.0",
     "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.9.2",
     "chai": "^4.4.1",
     "mocha": "^10.3.0",
     "mock-require": "^3.0.3",

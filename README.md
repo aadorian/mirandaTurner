@@ -1,4 +1,4 @@
-# Miranda Language Support for VS Code
+# Miranda (David Turner) for VS Code
 
 A Visual Studio Code extension with **syntax highlighting** and **ESLint-style linting** for the [Miranda](https://github.com/ncihnegn/miranda) programming language, the pure functional language designed by David Turner.
 
@@ -160,7 +160,7 @@ Then in VS Code: **Run Extension** (F5) or install the `.vsix`:
 
 ```bash
 npx @vscode/vsce package
-code --install-extension MinandaTurner-0.1.0.vsix
+code --install-extension MirandaDavidTurner-0.1.0.vsix
 ```
 
 ### Usage
