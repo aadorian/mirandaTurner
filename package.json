@@ -1,9 +1,9 @@
 {
-  "name": "MirandaDavidTurner",
+  "name": "MirandaTurner",
   "displayName": "Miranda (David Turner)",
   "description": "Syntax highlighting and ESLint-style code quality linting for the Miranda functional programming language",
   "version": "0.1.0",
-  "publisher": "AlejandroAdorjan",
+  "publisher": "AlejandroAdorjanOlivera",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -676,6 +676,8 @@
     "test": "npm run compile && tsc -p tsconfig.test.json && mocha",
     "test:grammar": "vscode-tmgrammar-test -g syntaxes/miranda.tmLanguage.json 'src/test/grammar/**/*.test.m'",
     "test:all": "npm test && npm run test:grammar",
+    "vscode:package": "vsce package --no-dependencies",
+    "vscode:publish": "vsce publish --no-dependencies",
     "dev": "EDITOR_CLI=code-insiders bash scripts/dev.sh",
     "guide": "EDITOR_CLI=code-insiders bash scripts/dev.sh --walkthrough --skip-tests",
     "start": "EDITOR_CLI=code-insiders bash scripts/dev.sh"
