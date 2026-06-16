@@ -1,0 +1,31 @@
+Session Title: Miranda (David Turner) VS Code Extension — v0.1.0
+Date: 16/06/2026
+Tester(s): Adorjan
+Test Environment: Windows 10, Cursor/VS Code compatible host, Node.js/npm, extension built from https://github.com/aadorian/mirandaTurner (main branch)
+Testing Scope: Syntax highlighting, ESLint-style linter (13 rules), Concepts/Examples sidebar, Concept Guide panel, Lint Issues panel, walkthrough/commands, configuration, packaging, and automated test suite. Out of scope: live marketplace install flow, Miranda compiler/runtime execution, macOS/Linux UI verification, and Objective-C `.m` file association conflicts.
+Test Objectives: Validate that the extension builds, packages, and passes its test suite on Windows; verify documented features against repository implementation; identify defects, documentation gaps, and areas for follow-up exploratory testing before marketplace release.
+
+Observations & Findings:
+
+| Step | Action Taken | Expected Result | Actual Result | Notes/Issues |
+|------|--------------|-----------------|---------------|--------------|
+| 1 | Cloned repository and ran `npm install` | Dependencies install without fatal errors | 378 packages installed successfully | npm reported 2 dependency vulnerabilities (1 moderate, 1 high); several deprecated transitive packages |
+| 2 | Ran `npm test` (Mocha unit/integration suite) | All unit tests pass | 122 tests passing in ~587ms | Covers linter rules, diagnostics, provider, config, all 14 bundled examples, concepts/examples manifests, and lint panel helpers |
+| 3 | Ran `npm run test:all` including grammar suite | Full test suite passes (122 + 6 grammar tests per README) | **Failed** at `test:grammar` with `ERROR no test cases found` | Windows glob `'src/test/grammar/**/*.test.m'` is not expanded by the test runner; individual grammar files pass when run explicitly |
+| 4 | Ran all 6 grammar test files individually | Each grammar scope test passes | All 6 passed (comments, comprehension, directives, keywords, literals, operators) | Grammar itself is sound; only the npm script glob is broken on Windows |
+| 5 | Ran `npm run vscode:package` | Produces installable `.vsix` | `MirandaTurner-0.1.0.vsix` created (65 files, 75.7 KB) | Packaging and prepublish compile succeed on Windows |
+| 6 | Reviewed `package.json` contributed features | Extension declares syntax, linter, 12 concepts, walkthrough, panels, commands, status bar | All surfaces documented in README match `contributes` manifest | Publisher: `AlejandroAdorjanOlivera`; engine `vscode ^1.85.0`; activation `onStartupFinished` |
+| 7 | Verified bundled examples lint-clean | All tutorial/official examples have no error-severity lint issues | 14/14 examples pass automated lint checks | `quicksort.m` may warn on unused `testdata` (documented in tests) |
+| 8 | Inspected `.mirandarc.json` vs linter config loader | Project-level `.mirandarc.json` is applied to linting | File exists with rule severities but `buildLintConfig` only reads VS Code `miranda.lint.*` workspace settings | README describes `.mirandarc.json` as a "configuration reference" — not wired into the extension; may confuse users expecting ESLint-style project config |
+| 9 | Checked GitHub release/marketplace readiness | Published release and/or marketplace listing available | No GitHub releases published; marketplace listing for this publisher/extension not verified in this session | Users must clone repo or install `.vsix` manually per README |
+| 10 | Attempted Windows dev workflow (`npm run dev`) | Quick-start script opens extension dev host | Script invokes `bash scripts/dev.sh` with `EDITOR_CLI=code-insiders` | Not runnable natively in PowerShell without Git Bash/WSL; Windows developers need documented alternative |
+| 11 | Reviewed extension activation and commands (`extension.ts`) | Commands register; linter runs on `.m` files; tutorial opens example + walkthrough | Code paths present for run lint, tutorial, walkthrough, settings, and resource linting | UI surfaces (sidebar, panels, status bar) registered via `registerViews` and `registerStatusBar` — not manually exercised in this session |
+| 12 | Compared with marketplace alternatives | Extension offers differentiated learning UX (12 Turner concepts, walkthrough) plus linting | Unique value: tutorial-oriented Concepts tree + Concept Guide webview alongside 13-rule linter | Competing extensions offer LSP completions/diagnostics or deeper static analysis; no Miranda code execution in this extension |
+
+Defects Found:
+
+Issue #1: `npm run test:grammar` / `npm run test:all` fails on Windows with "no test cases found" due to glob pattern not resolving `src/test/grammar/**/*.test.m` ([Link to bug tracker](https://github.com/aadorian/mirandaTurner/issues))
+Issue #2: `npm run dev`, `npm run guide`, and `npm start` require Bash and are not usable from native Windows PowerShell/cmd without WSL or Git Bash ([Link to bug tracker](https://github.com/aadorian/mirandaTurner/issues))
+Issue #3: `.mirandarc.json` is shipped and documented but not loaded by the extension — only VS Code `settings.json` keys affect lint behavior; documentation ambiguity may mislead users ([Link to bug tracker](https://github.com/aadorian/mirandaTurner/issues))
+
+Additional Notes & Suggestions: The extension is technically solid for v0.1.0: the linter is well-tested (13 rules, edge cases, CRLF handling), bundled examples are lint-clean, grammar highlighting is verified, and VSIX packaging works on Windows. Priority fixes before marketplace promotion: (1) make `test:all` cross-platform (e.g. use `glob` or enumerate grammar test files in the npm script), (2) add a PowerShell or Node-based dev launcher for Windows, (3) clarify or implement `.mirandarc.json` support. Follow-up exploratory sessions should cover: installing the `.vsix` in Cursor/VS Code and walking through the Getting Started walkthrough, Concepts sidebar → Concept Guide → example open flow, Lint Issues panel navigation, status bar error/warning counts, editor title bar actions, context menus on `.m` files, lint-on-type vs on-save settings, and `.m` vs Objective-C language association when both are installed. Consider publishing a GitHub Release with the `.vsix` artifact and addressing npm audit findings in devDependencies.
